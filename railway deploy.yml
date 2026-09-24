@@ -1,0 +1,22 @@
+name: Deploy Private Service to Railway
+
+on:
+  push:
+    branches:
+      - main # Triggers the deploy whenever you push code to your main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Railway Service
+        uses: docker://ghcr.io/railwayapp/cli:latest
+        with:
+          # Mentions your unique service ID so it bypasses all restrictions
+          args: up --service="${{ secrets.RAILWAY_SERVICE_ID }}" -d
+        env:
+          # Grants the specialized access token to log into your account
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
